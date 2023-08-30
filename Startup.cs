@@ -68,6 +68,7 @@ namespace SignalRSample
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 				endpoints.MapRazorPages();
 				endpoints.MapHub<UserHub>("/hubs/userCount");
+				endpoints.MapHub<DeathlyHallowHub>("/hubs/deathlyhallows");
 			});
 		}
 	}

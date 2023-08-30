@@ -6,16 +6,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using SignalRSample.Hubs;
 
 namespace SignalRSample.Controllers
 {
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly IHubContext<DeathlyHallowHub> _context;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IHubContext<DeathlyHallowHub> context)
 		{
 			_logger = logger;
+			_context = context;
 		}
 
 		public IActionResult Index()
@@ -32,6 +36,19 @@ namespace SignalRSample.Controllers
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+		public async Task<IActionResult> DeathlyHallows(string type)
+		{
+			SD.DeahlyHallowRace[type] += 1;
+
+			//send notification that model has updated
+			await _context.Clients.All.SendAsync("updateHallowCounter",
+				SD.DeahlyHallowRace[SD.Cloak],
+				SD.DeahlyHallowRace[SD.Stone],
+				SD.DeahlyHallowRace[SD.Wand]);
+
+			return Ok();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿//declaring connection string
 var connectionUserCount = new signalR.HubConnectionBuilder()
     .withUrl("/hubs/userCount", signalR.HttpTransportType.WebSockets) // here we can declare transport type
+    //.configureLogging(signalR.LogLevel.Trace) // manage logging level
     .build();
 
 //connect (kind of establishing two-way connection) (connect to methods that hub invokes aka receive notifications from hub)
