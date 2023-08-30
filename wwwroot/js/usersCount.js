@@ -1,5 +1,7 @@
 ﻿//declaring connection string
-var connectionUserCount = new signalR.HubConnectionBuilder().withUrl("/hubs/userCount").build();
+var connectionUserCount = new signalR.HubConnectionBuilder()
+    .withUrl("/hubs/userCount", signalR.HttpTransportType.WebSockets) // here we can declare transport type
+    .build();
 
 //connect (kind of establishing two-way connection) (connect to methods that hub invokes aka receive notifications from hub)
 connectionUserCount.on("updateTotalViews", (value) => {
