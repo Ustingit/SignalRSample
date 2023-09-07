@@ -52,6 +52,10 @@ btn_un_ravenclaw.addEventListener("click", function (event) {
     event.preventDefault();
 });
 
+connectionHouseGroup.on("otherUserStateChanged", (message) => {
+    toastr.success(message);
+});
+
 connectionHouseGroup.on("subscriptionStatus", (strGroupsJoined, houseName, hasSubscribed) => {
     lbl_houseJoined.innerText = strGroupsJoined;
 
@@ -102,6 +106,27 @@ connectionHouseGroup.on("subscriptionStatus", (strGroupsJoined, houseName, hasSu
         }
         toastr.success(`You have succesfully unsubscribed from house ${houseName}`);
     }
+});
+
+connectionHouseGroup.on("houseTrigger", (message) => {
+    toastr.success(message);
+});
+
+trigger_gryffindor.addEventListener("click", function (event) {
+    connectionHouseGroup.send("TriggerHouse", "gryffindor"); // send as we don't expect response
+    event.preventDefault();
+});
+trigger_slytherin.addEventListener("click", function (event) {
+    connectionHouseGroup.send("TriggerHouse", "slytherin"); // send as we don't expect response
+    event.preventDefault();
+});
+trigger_hufflepuff.addEventListener("click", function (event) {
+    connectionHouseGroup.send("TriggerHouse", "hufflepuff"); // send as we don't expect response
+    event.preventDefault();
+});
+trigger_ravenclaw.addEventListener("click", function (event) {
+    connectionHouseGroup.send("TriggerHouse", "ravenclaw"); // send as we don't expect response
+    event.preventDefault();
 });
 
 function rejected() {

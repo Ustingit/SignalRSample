@@ -17,6 +17,7 @@ namespace SignalRSample.Hubs
 			{
 				_joinedGroups.Add(key);
 				await Clients.Caller.SendAsync("subscriptionStatus", GetJoinedGroups(), houseName, true);
+				await Clients.Others.SendAsync("otherUserStateChanged", $"Someone has subscribed to house {houseName} !");
 				await Groups.AddToGroupAsync(Context.ConnectionId, houseName);
 			}
 		}
@@ -28,9 +29,16 @@ namespace SignalRSample.Hubs
 			{
 				_joinedGroups.Remove(key);
 				await Clients.Caller.SendAsync("subscriptionStatus", GetJoinedGroups(), houseName, false);
+				await Clients.Others.SendAsync("otherUserStateChanged", $"Someone has unsubscribed from house {houseName} !");
 				await Groups.RemoveFromGroupAsync(Context.ConnectionId, houseName);
 			}
 		}
+
+		public async Task TriggerHouse(string houseName)
+		{
+			await Clients.Group(houseName).SendAsync("houseTrigger", "Attention to the members of the house!");
+		}
+
 
 		private string GetJoinedGroups()
 		{
