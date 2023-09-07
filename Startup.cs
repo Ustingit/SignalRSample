@@ -70,6 +70,7 @@ namespace SignalRSample
 				endpoints.MapHub<UserHub>("/hubs/userCount");
 				endpoints.MapHub<DeathlyHallowHub>("/hubs/deathlyhallows");
 				endpoints.MapHub<HouseGroupHub>("/hubs/housegroup");
+				endpoints.MapHub<NotificationHub>("/hubs/notification");
 			});
 		}
 	}
