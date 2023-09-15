@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using SignalRSample.Data;
+using SignalRSample.Entities;
 using SignalRSample.Hubs;
 
 namespace SignalRSample.Controllers
@@ -15,11 +17,18 @@ namespace SignalRSample.Controllers
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IHubContext<DeathlyHallowHub> _context;
+		private readonly ApplicationDbContext _dbContext;
+		private readonly IHubContext<OrderHub> _orderHubContext;
 
-		public HomeController(ILogger<HomeController> logger, IHubContext<DeathlyHallowHub> context)
+		public HomeController(ILogger<HomeController> logger, 
+			IHubContext<DeathlyHallowHub> context, 
+			ApplicationDbContext dbContext,
+			IHubContext<OrderHub> orderHubContext)
 		{
 			_logger = logger;
 			_context = context;
+			_dbContext = dbContext;
+			_orderHubContext = orderHubContext;
 		}
 
 		public IActionResult Index()
@@ -69,6 +78,51 @@ namespace SignalRSample.Controllers
 				SD.DeahlyHallowRace[SD.Wand]);
 
 			return Ok();
+		}
+
+		[ActionName("Order")]
+		public async Task<IActionResult> Order()
+		{
+			string[] name = { "Bhrugen", "Ben", "Jess", "Laura", "Ron" };
+			string[] itemName = { "Food1", "Food2", "Food3", "Food4", "Food5" };
+
+			Random rand = new Random();
+			// Generate a random index less than the size of the array.  
+			int index = rand.Next(name.Length);
+
+			Order order = new Order()
+			{
+				Name = name[index],
+				ItemName = itemName[index],
+				Count = index
+			};
+			
+			return View(order);
+		}
+
+		[ActionName("Order")]
+		[HttpPost]
+		public async Task<IActionResult> OrderPost(Order order)
+		{
+
+			_dbContext.Orders.Add(order);
+			_dbContext.SaveChanges();
+			await _orderHubContext.Clients.All.SendAsync("OrderIsCreated");
+
+			return RedirectToAction(nameof(Order));
+		}
+
+		[ActionName("OrderList")]
+		public async Task<IActionResult> OrderList()
+		{
+			return View();
+		}
+
+		[HttpGet]
+		public IActionResult GetAllOrder()
+		{
+			var productList = _dbContext.Orders.ToList();
+			return Json(new { data = productList });
 		}
 	}
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SignalRSample.Entities;
 
 namespace SignalRSample.Data
 {
@@ -12,5 +13,7 @@ namespace SignalRSample.Data
 			: base(options)
 		{
 		}
+
+		public DbSet<Order> Orders { get; set; }
 	}
 }
