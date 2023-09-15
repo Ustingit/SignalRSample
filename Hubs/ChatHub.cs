@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SignalRSample.Data;
@@ -23,6 +24,7 @@ namespace SignalRSample.Hubs
 			await Clients.All.SendAsync("MessageReceived", user, message);
 		}
 
+		[Authorize] // means only authorized user can send private message
 		public async Task SendMessageToReceiver(string sender, string receiver, string message)
 		{
 			var cancellationToken = CancellationToken.None;
