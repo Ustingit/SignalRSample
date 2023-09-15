@@ -36,7 +36,15 @@ namespace SignalRSample
 			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			services.AddControllersWithViews();
+
+			var azureConnection = Configuration.GetConnectionString("SignalRHub");
+			Console.WriteLine($"Azure connection is: {azureConnection}");
+
+			if(string.IsNullOrEmpty(azureConnection))
+				throw new ArgumentNullException("ensure azure  signal r connection string");
+
 			services.AddSignalR();
+				//.AddAzureSignalR(azureConnection);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

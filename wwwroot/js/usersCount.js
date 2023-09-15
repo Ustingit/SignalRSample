@@ -29,5 +29,20 @@ function rejected() {
     console.log("connection refused");
 }
 
+connectionUserCount.onclose((error) => {
+    document.body.style.background = "red";
+    console.log(`Connection is closed: ${error}`);
+});
+
+connectionUserCount.onreconnected((connectionId) => {
+    document.body.style.background = "green";
+    console.log(`Connection is restored: ${connectionId}`);
+});
+
+connectionUserCount.onreconnecting((error) => {
+    document.body.style.background = "orange";
+    console.log(`Trying to reconnect after fail: ${error}`);
+});
+
 //start connection
 connectionUserCount.start().then(fulfilled, rejected);
