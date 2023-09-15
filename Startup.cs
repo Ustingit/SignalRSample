@@ -71,6 +71,7 @@ namespace SignalRSample
 				endpoints.MapHub<DeathlyHallowHub>("/hubs/deathlyhallows");
 				endpoints.MapHub<HouseGroupHub>("/hubs/housegroup");
 				endpoints.MapHub<NotificationHub>("/hubs/notification");
+				endpoints.MapHub<ChatHub>("/hubs/chat");
 			});
 		}
 	}
