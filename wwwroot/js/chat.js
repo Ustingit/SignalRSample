@@ -7,9 +7,20 @@ document.getElementById("sendMessage").disabled = true;
 document.getElementById("sendMessage").addEventListener("click", function (event) {
     var sender = document.getElementById("senderEmail").value;
     var message = document.getElementById("chatMessage").value;
+    var receiver = document.getElementById("receiverEmail").value;
 
-    // send message for all the users
-    chatConnection.send("SendMessageToAll", sender, message);
+    if (receiver.length > 0) {
+        // private message
+        console.log("private 1", receiver);
+        chatConnection.send("SendMessageToReceiver", sender, receiver, message).catch(function (err) {
+            console.log(`Error: ${err}`);
+        });
+    } else {
+        // send message for all the users
+        chatConnection.send("SendMessageToAll", sender, message).catch(function(err) {
+            console.log(`Error: ${err}`);
+        });
+    }
 
     event.preventDefault();
 });
