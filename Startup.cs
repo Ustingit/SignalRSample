@@ -81,7 +81,7 @@ namespace SignalRSample
 				endpoints.MapHub<NotificationHub>("/hubs/notification");
 				endpoints.MapHub<ChatHub>("/hubs/chat");
 				endpoints.MapHub<OrderHub>("/hubs/order");
-				endpoints.MapHub<OrderHub>("/hubs/advancedChat");
+				endpoints.MapHub<AdvancedChatHub>("/hubs/advancedChat");
 			});
 		}
 	}
