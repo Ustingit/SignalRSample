@@ -9,6 +9,12 @@ advancedChatConnection.on("ReceiveUserConnected", function (userId, userName, is
     }
 });
 
+advancedChatConnection.on("ReceiveUserDisconnected", function (userId, userName, userHasConnection) {
+    if (!userHasConnection) {
+        addMessage(`${userName} is offline`);
+    }
+});
+
 advancedChatConnection.start().then(function () {
     console.log("connection is established");
 }, function () {
