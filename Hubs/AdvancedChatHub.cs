@@ -26,7 +26,7 @@ namespace SignalRSample.Hubs
 			{
 				var userName = (_context.Users.FirstOrDefault(_ => _.Id == userId))?.UserName;
 
-				Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", userId, userName);
+				Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected", userId, userName, HubConnections.HasUser(userId));
 				HubConnections.AddUserConnection(userId, Context.ConnectionId);
 			}
 
@@ -52,6 +52,23 @@ namespace SignalRSample.Hubs
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
+			}
+
+			return false;
+		}
+
+		public static bool HasUser(string userId)
+		{
+			try
+			{
+				if (Users.TryGetValue(userId, out var connections))
+				{
+					return connections.Any();
+				}
+			}
+			catch (Exception ex)
+			{
+				return false;
 			}
 
 			return false;

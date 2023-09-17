@@ -3,8 +3,10 @@
     .withAutomaticReconnect([0, 1000, 5000, null])
     .build();
 
-advancedChatConnection.on("ReceiveUserConnected", function (userId, userName) {
-    addMessage(`${userName} is online`);
+advancedChatConnection.on("ReceiveUserConnected", function (userId, userName, isReConnect) {
+    if (!isReConnect) {
+        addMessage(`${userName} is online`);
+    }
 });
 
 advancedChatConnection.start().then(function () {
