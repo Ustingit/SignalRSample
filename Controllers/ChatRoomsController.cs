@@ -79,8 +79,8 @@ namespace SignalRSample.Controllers
 			return CreatedAtAction(nameof(GetChatRoom), new {id = room.Id});
 		}
 
-		[HttpDelete("{id}")]
-		public async Task<ActionResult<ChatRoom>> DeleteChatRoom(int id)
+		[HttpDelete("/[controller]/{id}")]
+		public async Task<IActionResult> DeleteChatRoom(int id)
 		{
 			var room = await _context.ChatRooms.FirstOrDefaultAsync(_ => _.Id == id);
 
@@ -92,7 +92,7 @@ namespace SignalRSample.Controllers
 			_context.ChatRooms.Remove(room);
 			await _context.SaveChangesAsync();
 
-			return NoContent();
+			return Ok(new { deleted = id, selected = (room == null ? 0 : room.Id) });
 		}
 	}
 }

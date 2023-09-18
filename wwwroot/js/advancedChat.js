@@ -20,6 +20,11 @@ advancedChatConnection.on("ReceiveAddRoomMessage", function (maxRoom, roomId, ro
     fillRoomDropDown();
 });
 
+advancedChatConnection.on("ReceiveDeleteRoomMessage", function (deletedRoom, selectedRoom, roomName, userId, userName) {
+    addMessage(`${userName} has deleted the room ${roomName}`);
+    fillRoomDropDown();
+});
+
 document.getElementById("btnCreateRoom").addEventListener("click", function (event)
 {
     addnewRoom(4);
@@ -58,6 +63,31 @@ function addnewRoom(maxRoom) {
         },
         error: function (xhr) {
             alert('error during room creation');
+        }
+    })
+}
+
+function deleteRoom() {
+    var room = document.getElementById('ddlDelRoom');
+    var roomName = room.options[room.selectedIndex].text;
+
+    if (confirm(`Are you sure you want to delete room '${roomName}'?`) === false) {
+        return;
+    }
+
+    $.ajax({
+        url: `/ChatRooms/${room.value}`,
+        type: "DELETE",
+        contentType: 'application/json;',
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (json) {
+            advancedChatConnection.invoke("SendDeleteRoomMessage", json.deleted, json.selected, roomName);
+            fillRoomDropDown();
+        },
+        error: function (xhr) {
+            alert('error during room deletion');
         }
     })
 }
