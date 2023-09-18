@@ -59,6 +59,18 @@ namespace SignalRSample.Hubs
 
 			return base.OnDisconnectedAsync(exception);
 		}
+
+		public async Task SendAddRoomMessage(int maxRoom, int roomId, string roomName)
+		{
+			var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (!string.IsNullOrEmpty(userId))
+			{
+				var userName = (_context.Users.FirstOrDefault(_ => _.Id == userId))?.UserName;
+
+				await Clients.All.SendAsync("ReceiveAddRoomMessage", maxRoom, roomId, roomName, userId, userName);
+			}
+		}
 	}
 
 	public static class HubConnections

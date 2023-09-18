@@ -21,7 +21,7 @@ namespace SignalRSample.Controllers
 
 		[HttpGet]
 		[Route("/[controller]/GetChatUser")]
-		public async Task<ActionResult<IEnumerable<ChatRoom>>> GetChatUser()
+		public async Task<ActionResult<IEnumerable<Object>>> GetChatUser()
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			var users = await _context.Users.ToArrayAsync();
@@ -31,9 +31,9 @@ namespace SignalRSample.Controllers
 				return NotFound();
 			}
 
-			return users.Where(_ => _.Id != userId).Select(_ => new ChatRoom()
+			return users.Where(_ => _.Id != userId).Select(_ => new 
 			{
-				Id = Int32.Parse(_.Id),
+				Id = _.Id,
 				Name = _.UserName
 			}).ToList();
 		}
@@ -70,8 +70,8 @@ namespace SignalRSample.Controllers
 			return NoContent();
 		}
 
-		[HttpPost]
-		public async Task<ActionResult<ChatRoom>> CreateChatRoom(ChatRoom room)
+		[HttpPost("/[controller]/PostChatRoom")]
+		public async Task<ActionResult<ChatRoom>> CreateChatRoom([FromBody] ChatRoom room)
 		{
 			_context.ChatRooms.Add(room);
 			await _context.SaveChangesAsync();
