@@ -25,6 +25,16 @@ advancedChatConnection.on("ReceiveDeleteRoomMessage", function (deletedRoom, sel
     fillRoomDropDown();
 });
 
+advancedChatConnection.on("ReceiveSendPublicMessageMessage", function (roomId, message, roomName, userId, userName) {
+    addMessage(`['${roomName}' Public Message from ${userName}] - ${message}`);
+    fillRoomDropDown();
+});
+
+advancedChatConnection.on("ReceiveSendPrivateMessageMessage", function (senderId, senderName, receiverId, receiverName, message, chatId) {
+    addMessage(`[Private Message from ${senderName}] - ${message}`);
+    fillRoomDropDown();
+});
+
 document.getElementById("btnCreateRoom").addEventListener("click", function (event)
 {
     addnewRoom(4);
@@ -92,6 +102,28 @@ function deleteRoom() {
     })
 }
 
+function sendPublicMessage() {
+    var message = document.getElementById('txtPublicMessage');
+    var room = document.getElementById('ddlSelRoom');
+
+    var roomId = room.value;
+    var roomName = room.options[room.selectedIndex].text;
+    var messageText = message.value;
+
+    advancedChatConnection.send("SendPublicMessage", Number(roomId), messageText, roomName);
+}
+
+function sendPrivateMessage() {
+    var message = document.getElementById('txtPrivateMessage');
+    var room = document.getElementById('ddlSelUser');
+
+    var receiverId = room.value;
+    var receiverName = room.options[room.selectedIndex].text;
+    var messageText = message.value;
+
+    advancedChatConnection.send("SendPrivateMessage", receiverId, messageText, receiverName);
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
     fillRoomDropDown();
     fillUserDropDown();
@@ -105,11 +137,12 @@ function fillUserDropDown() {
             ddlSelUser.innerText = null;
 
             json.forEach(function (item) {
+                console.log('build users to select', item);
                 var newOption = document.createElement("option");
 
-                newOption.text = item.userName; //item.whateverProperty
-                newOption.value = item.id;
                 ddlSelUser.add(newOption);
+                newOption.innerHTML = item.userName; //item.whateverProperty
+                newOption.value = item.id;
             });
 
         })

@@ -83,6 +83,32 @@ namespace SignalRSample.Hubs
 				await Clients.All.SendAsync("ReceiveDeleteRoomMessage", deletedRoom, selectedRoom, roomName, userId, userName);
 			}
 		}
+
+		public async Task SendPublicMessage(int roomId, string message, string roomName)
+		{
+			var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (!string.IsNullOrEmpty(userId))
+			{
+				var userName = (_context.Users.FirstOrDefault(_ => _.Id == userId))?.UserName;
+
+				await Clients.All.SendAsync("ReceiveSendPublicMessageMessage", roomId, message, roomName, userId, userName);
+			}
+		}
+
+		public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
+		{
+			var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (!string.IsNullOrEmpty(senderId))
+			{
+				var senderName = (_context.Users.FirstOrDefault(_ => _.Id == senderId))?.UserName;
+
+				var users = new string[] { senderId, receiverId };
+
+				await Clients.Users(users).SendAsync("ReceiveSendPrivateMessageMessage", senderId, senderName, receiverId, receiverName, message, Guid.NewGuid());
+			}
+		}
 	}
 
 	public static class HubConnections
