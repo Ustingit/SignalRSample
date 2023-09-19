@@ -109,6 +109,22 @@ namespace SignalRSample.Hubs
 				await Clients.Users(users).SendAsync("ReceiveSendPrivateMessageMessage", senderId, senderName, receiverId, receiverName, message, Guid.NewGuid());
 			}
 		}
+
+		public async Task SendOpenPrivateChat(string receiverId)
+		{
+			var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var userName = Context.User.FindFirstValue(ClaimTypes.Name);
+
+			if (!string.IsNullOrEmpty(receiverId))
+			{
+				await Clients.Users(receiverId).SendAsync("ReceiveOpenPrivateChat", receiverId);
+			}
+		}
+
+		public async Task SendDeletePrivateChat(string chatId)
+		{
+			await Clients.All.SendAsync("ReceiveDeletePrivateChat", chatId);
+		}
 	}
 
 	public static class HubConnections

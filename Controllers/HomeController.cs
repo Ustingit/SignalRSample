@@ -75,6 +75,17 @@ namespace SignalRSample.Controllers
 			});
 		}
 
+		public IActionResult AdvancedChatV2()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			return View(new ChatViewModel()
+			{
+				Rooms = _dbContext.ChatRooms.ToList(),
+				MaxRoomAllowed = 4,
+				UserId = userId
+			});
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
